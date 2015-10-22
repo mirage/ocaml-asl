@@ -72,8 +72,14 @@ module Message: sig
 end
 
 type level = [
-  | `Notice
+  | `Alert
+  | `Crit
+  | `Debug
+  | `Emerg
   | `Err
+  | `Info
+  | `Notice
+  | `Warning
 ]
 (** Every message has an associated level, which is usually used for
     filtering. *)

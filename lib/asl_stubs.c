@@ -128,3 +128,30 @@ GENERATE_ASL_SET(GID)
 GENERATE_ASL_SET(LEVEL)
 GENERATE_ASL_SET(MSG)
 
+#define GENERATE_ASL_LEVEL(name) \
+CAMLprim value stub_get_asl_level_##name(){ \
+  CAMLparam0(); \
+  CAMLreturn(Val_int(ASL_LEVEL_##name)); \
+}
+
+GENERATE_ASL_LEVEL(EMERG)
+GENERATE_ASL_LEVEL(ALERT)
+GENERATE_ASL_LEVEL(CRIT)
+GENERATE_ASL_LEVEL(ERR)
+GENERATE_ASL_LEVEL(WARNING)
+GENERATE_ASL_LEVEL(NOTICE)
+GENERATE_ASL_LEVEL(INFO)
+GENERATE_ASL_LEVEL(DEBUG)
+
+CAMLprim value stub_asl_log(value client, value message, value level, value txt) {
+  CAMLparam4(client, message, level, txt);
+  int c_level = Int_val(level);
+  aslclient asl = Asl_val(client);
+  aslmsg msg = Msg_val(message);
+  const char *c_message = strdup(String_val(txt));
+  caml_release_runtime_system();
+  asl_log(asl, msg, c_level, "%s", c_message);
+  caml_acquire_runtime_system();
+  free((void*)c_message);
+  CAMLreturn(0);
+}

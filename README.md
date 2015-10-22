@@ -14,7 +14,7 @@ let message = Asl.Message.create ~sender:"example" () in
 Asl.log ~client message `Notice "hello, world!";
 ```
 
-Please read [the API documentation](https://mirage.github.io/ocaml-asl/index.html.html).
+Please read [the API documentation](https://mirage.github.io/ocaml-asl/index.html).
 
 For more context, please read the [Apple System Log man pages](https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/asl.3.html).
 

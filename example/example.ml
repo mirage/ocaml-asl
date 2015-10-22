@@ -18,4 +18,5 @@
 let _ =
   let client = Asl.Client.create ~ident:"example" ~facility:"Daemon" ~opts:[ `Stderr ] () in
   let message = Asl.Message.create ~sender:"example" () in
-  Asl.log client message `Notice "hello, world!"
+  Asl.log ~client message `Notice "hello, world!";
+  Asl.log message `Notice "the client is optional but this won't go to stderr"

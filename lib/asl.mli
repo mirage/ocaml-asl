@@ -84,6 +84,8 @@ type level = [
 (** Every message has an associated level, which is usually used for
     filtering. *)
 
-val log: Client.t -> Message.t -> level -> string -> unit
-(** Send a string to the logger. *)
+val log: ?client:Client.t -> Message.t -> level -> string -> unit
+(** Send a string to the logger. If no client is provided then
+    a special thread-safe client will be used internally. It is
+    more efficient to create one client per thread. *)
 

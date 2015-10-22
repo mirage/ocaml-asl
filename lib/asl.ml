@@ -49,6 +49,10 @@ module Client = struct
 
   external asl_open: string -> string -> bool -> bool -> bool -> t = "stub_asl_open"
 
+  external asl_open_null: unit -> t = "stub_asl_open_null"
+
+  let null = asl_open_null ()
+
   let create ~ident ~facility ?(opts=[]) () =
     let stderr = List.mem `Stderr opts in
     let no_delay = List.mem `No_delay opts in
@@ -140,6 +144,6 @@ let int_of_level = function
 
 external asl_log: Client.t -> Message.t -> int -> string -> unit = "stub_asl_log"
 
-let log client message level body =
+let log ?(client=Client.null) message level body =
   let level = int_of_level level in
   asl_log client message level body

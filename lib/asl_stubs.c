@@ -48,6 +48,11 @@ static value alloc_client(aslclient asl) {
   return v;
 }
 
+CAMLprim value stub_asl_open_null(){
+  CAMLparam0();
+  CAMLreturn(alloc_client(NULL));
+}
+
 CAMLprim value stub_asl_open(value ident, value facility, value stderr, value no_delay, value no_remote) {
   CAMLparam5(ident, facility, stderr, no_delay, no_remote);
   const char *c_ident = String_val(ident);

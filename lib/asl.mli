@@ -20,7 +20,15 @@
 The Apple System Log is intended to be a replacement for syslog on
 OSX systems.
 
-Please read the following documents:
+Example:
+
+{[
+  let client = Asl.Client.create ~ident:"example" ~facility:"Daemon" ~opts:[ `Stderr ] () in
+  let message = Asl.Message.create ~sender:"example" () in
+  Asl.log ~client message `Notice "hello, world!"
+]}
+
+For context, please read the following documents:
 
 {ol
 {li
@@ -29,14 +37,6 @@ Apple System Log man pages}
 }
 }
 *)
-
-type error = [
-  | `Msg of string
-]
-
-type 'a result = ('a, error) Result.result
-
-val error_to_msg: 'a result -> ('a, [ `Msg of string ]) Result.result
 
 module Client: sig
   type t
@@ -85,7 +85,11 @@ type level = [
     filtering. *)
 
 val log: ?client:Client.t -> Message.t -> level -> string -> unit
-(** Send a string to the logger. If no client is provided then
-    a special thread-safe client will be used internally. It is
-    more efficient to create one client per thread. *)
+(** Send a string to the logger with the given message context and level.
+
+    Creating a client is optional. If none is provided then a default
+    thread-safe client is used. Note the internal locks can cause
+    extra contention between threads. Note also the only way to have
+    logs printed to stderr is to construct and use a Client.t.
+  *)
 

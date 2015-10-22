@@ -15,29 +15,6 @@
  *
  *)
 
-(** Allow an application to log via the Apple System Log
-
-The Apple System Log is intended to be a replacement for syslog on
-OSX systems.
-
-Please read the following documents:
-
-{ol
-{li
-{{:://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/asl.3.html}
-Apple System Log man pages}
-}
-}
-*)
-
-type error = [
-  | `Msg of string
-]
-
-type 'a result = ('a, error) Result.result
-
-let error_to_msg x = x
-
 module Client = struct
   type t
   

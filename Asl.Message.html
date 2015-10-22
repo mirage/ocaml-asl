@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Asl.Client.html">
+<link rel="Up" href="Asl.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Asl" rel="Chapter" href="Asl.html"><title>Asl.Message</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Asl.Client.html" title="Asl.Client">Previous</a>
+&nbsp;<a class="up" href="Asl.html" title="Asl">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Asl.Message.html">Asl.Message</a></h1>
+
+<pre><span class="keyword">module</span> Message: <code class="code">sig</code> <a href="Asl.Message.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+A message provides context (keys, values, client ids etc) 
+      for individual logs<br>
+</div>
+
+
+<pre><span id="TYPEty"><span class="keyword">type</span> <code class="type"></code>ty</span> = <code class="type">[ `Msg ]</code> </pre>
+<div class="info ">
+The type of the message<br>
+</div>
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">?ty:<a href="Asl.Message.html#TYPEty">ty</a> -><br>       ?time:string -><br>       ?host:string -><br>       ?sender:string -><br>       ?facility:string -><br>       ?pid:string -><br>       ?uid:string -><br>       ?gid:string -><br>       ?level:string -><br>       ?msg:string -> ?extra:(string * string) list -> unit -> <a href="Asl.Message.html#TYPEt">t</a></code></pre><div class="info ">
+Construct a message, overriding some of the context.<br>
+</div>
+</body></html>

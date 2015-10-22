@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Asl" rel="Chapter" href="Asl.html"><title>Asl</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Asl.html">Asl</a></h1>
+
+<pre><span class="keyword">module</span> Asl: <code class="code">sig</code> <a href="Asl.html">..</a> <code class="code">end</code></pre><div class="info module top">
+Allow an application to log via the Apple System Log
+<p>
+
+The Apple System Log is intended to be a replacement for syslog on
+OSX systems.
+<p>
+
+Please read the following documents:
+<p>
+
+<OL>
+<li><a href="://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/asl.3.html">
+Apple System Log man pages</a>
+</li>
+</OL>
+<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = <code class="type">[ `Msg of string ]</code> </pre>
+
+
+<pre><span id="TYPEresult"><span class="keyword">type</span> <code class="type">'a</code> result</span> = <code class="type">('a, <a href="Asl.html#TYPEerror">error</a>) Result.result</code> </pre>
+
+
+<pre><span id="VALerror_to_msg"><span class="keyword">val</span> error_to_msg</span> : <code class="type">'a <a href="Asl.html#TYPEresult">result</a> -> ('a, [ `Msg of string ]) Result.result</code></pre>
+<pre><span class="keyword">module</span> <a href="Asl.Client.html">Client</a>: <code class="code">sig</code> <a href="Asl.Client.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module</span> <a href="Asl.Message.html">Message</a>: <code class="code">sig</code> <a href="Asl.Message.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPElevel"><span class="keyword">type</span> <code class="type"></code>level</span> = <code class="type">[ `Alert | `Crit | `Debug | `Emerg | `Err | `Info | `Notice | `Warning ]</code> </pre>
+<div class="info ">
+Every message has an associated level, which is usually used for
+    filtering.<br>
+</div>
+
+
+<pre><span id="VALlog"><span class="keyword">val</span> log</span> : <code class="type">?client:<a href="Asl.Client.html#TYPEt">Client.t</a> -> <a href="Asl.Message.html#TYPEt">Message.t</a> -> <a href="Asl.html#TYPElevel">level</a> -> string -> unit</code></pre><div class="info ">
+Send a string to the logger. If no client is provided then
+    a special thread-safe client will be used internally. It is
+    more efficient to create one client per thread.<br>
+</div>
+</body></html>

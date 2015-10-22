@@ -9,9 +9,6 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;error&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Msg</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;result&nbsp;=&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Asl</span>.error)&nbsp;<span class="constructor">Result</span>.result<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;error_to_msg&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Asl</span>.result&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">'</span>a,&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Msg</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;])&nbsp;<span class="constructor">Result</span>.result<br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Client</span>&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>

@@ -56,6 +56,11 @@ module Client = struct
     asl_open ident facility stderr no_delay no_remote
 end 
 
+module Opt = struct
+  type 'a t = 'a option
+  let iter f = function None -> () | Some x -> f x
+end
+
 module Message = struct
 
   type t
@@ -66,10 +71,29 @@ module Message = struct
 
   external asl_new_msg: unit -> t = "stub_asl_new_msg"
 
+  external asl_set_TIME: t -> string -> unit = "stub_asl_set_TIME"
+  external asl_set_HOST: t -> string -> unit = "stub_asl_set_HOST"
+  external asl_set_SENDER: t -> string -> unit = "stub_asl_set_SENDER"
+  external asl_set_FACILITY: t -> string -> unit = "stub_asl_set_FACILITY"
+  external asl_set_PID: t -> string -> unit = "stub_asl_set_PID"
+  external asl_set_UID: t -> string -> unit = "stub_asl_set_UID"
+  external asl_set_GID: t -> string -> unit = "stub_asl_set_GID"
+  external asl_set_LEVEL: t -> string -> unit = "stub_asl_set_LEVEL"
+  external asl_set_MSG: t -> string -> unit = "stub_asl_set_MSG"
+
   let create ?(ty=`Msg) ?time ?host ?sender ?facility ?pid ?uid
     ?gid ?level ?msg ?extra () =
     let m = asl_new_msg () in
-    failwith "create unimplemented"
+    Opt.iter (asl_set_TIME m) time;
+    Opt.iter (asl_set_HOST m) host;
+    Opt.iter (asl_set_SENDER m) sender;
+    Opt.iter (asl_set_FACILITY m) facility;
+    Opt.iter (asl_set_PID m) pid;
+    Opt.iter (asl_set_UID m) uid;
+    Opt.iter (asl_set_GID m) gid;
+    Opt.iter (asl_set_LEVEL m) level;
+    Opt.iter (asl_set_MSG m) msg;
+    m
 end
 
 type level = [

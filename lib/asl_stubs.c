@@ -15,6 +15,7 @@
  */
 
 #include <asl.h>
+#include <string.h>
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
 #include <caml/alloc.h>
@@ -93,3 +94,24 @@ CAMLprim value stub_asl_new_msg() {
   caml_acquire_runtime_system();
   CAMLreturn(alloc_message(msg));
 }
+
+#define GENERATE_ASL_SET(name) \
+CAMLprim value stub_asl_set_##name(value m, value string) { \
+  CAMLparam2(m, string); \
+  const char *c_string = strdup(String_val(string)); \
+  caml_release_runtime_system(); \
+  asl_set(Msg_val(m), ASL_KEY_##name, c_string); \
+  caml_acquire_runtime_system(); \
+  free((void*)c_string); \
+  CAMLreturn(0); \
+}
+
+GENERATE_ASL_SET(TIME)
+GENERATE_ASL_SET(HOST)
+GENERATE_ASL_SET(SENDER)
+GENERATE_ASL_SET(FACILITY)
+GENERATE_ASL_SET(PID)
+GENERATE_ASL_SET(UID)
+GENERATE_ASL_SET(GID)
+GENERATE_ASL_SET(LEVEL)
+GENERATE_ASL_SET(MSG)

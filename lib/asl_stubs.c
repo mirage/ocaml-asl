@@ -65,3 +65,31 @@ CAMLprim value stub_asl_open(value ident, value facility, value stderr, value no
 }
 
 
+#define Msg_val(v) (*((aslmsg *) Data_custom_val(v)))
+
+static void message_finalize(value v) {
+  asl_free(Msg_val(v));
+}
+
+static struct custom_operations message_ops = {
+  "org.mirage.caml.asl.message",
+  message_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+static value alloc_message(aslmsg msg) {
+  value v = alloc_custom(&message_ops, sizeof(aslmsg), 0, 1);
+  Msg_val(v) = msg;
+  return v;
+}
+
+CAMLprim value stub_asl_new_msg() {
+  CAMLparam0();
+  caml_release_runtime_system();
+  aslmsg msg = asl_new(ASL_TYPE_MSG);
+  caml_acquire_runtime_system();
+  CAMLreturn(alloc_message(msg));
+}

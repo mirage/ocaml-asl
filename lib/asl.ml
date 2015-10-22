@@ -64,8 +64,11 @@ module Message = struct
     | `Msg
   ]
 
+  external asl_new_msg: unit -> t = "stub_asl_new_msg"
+
   let create ?(ty=`Msg) ?time ?host ?sender ?facility ?pid ?uid
     ?gid ?level ?msg ?extra () =
+    let m = asl_new_msg () in
     failwith "create unimplemented"
 end
 

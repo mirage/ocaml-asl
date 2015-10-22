@@ -95,6 +95,18 @@ CAMLprim value stub_asl_new_msg() {
   CAMLreturn(alloc_message(msg));
 }
 
+CAMLprim value stub_asl_set(value m, value key, value val) {
+  CAMLparam3(m, key, val);
+  const char *c_key = strdup(String_val(key));
+  const char *c_val = strdup(String_val(val));
+  caml_release_runtime_system();
+  asl_set(Msg_val(m), c_key, c_val);
+  caml_acquire_runtime_system();
+  free((void*)c_key);
+  free((void*)c_val);
+  CAMLreturn(0);
+}
+
 #define GENERATE_ASL_SET(name) \
 CAMLprim value stub_asl_set_##name(value m, value string) { \
   CAMLparam2(m, string); \
@@ -115,3 +127,4 @@ GENERATE_ASL_SET(UID)
 GENERATE_ASL_SET(GID)
 GENERATE_ASL_SET(LEVEL)
 GENERATE_ASL_SET(MSG)
+

@@ -71,6 +71,8 @@ module Message = struct
 
   external asl_new_msg: unit -> t = "stub_asl_new_msg"
 
+  external asl_set: t -> string -> string -> unit = "stub_asl_set"
+
   external asl_set_TIME: t -> string -> unit = "stub_asl_set_TIME"
   external asl_set_HOST: t -> string -> unit = "stub_asl_set_HOST"
   external asl_set_SENDER: t -> string -> unit = "stub_asl_set_SENDER"
@@ -82,7 +84,7 @@ module Message = struct
   external asl_set_MSG: t -> string -> unit = "stub_asl_set_MSG"
 
   let create ?(ty=`Msg) ?time ?host ?sender ?facility ?pid ?uid
-    ?gid ?level ?msg ?extra () =
+  ?gid ?level ?msg ?(extra=[]) () =
     let m = asl_new_msg () in
     Opt.iter (asl_set_TIME m) time;
     Opt.iter (asl_set_HOST m) host;
@@ -93,6 +95,7 @@ module Message = struct
     Opt.iter (asl_set_GID m) gid;
     Opt.iter (asl_set_LEVEL m) level;
     Opt.iter (asl_set_MSG m) msg;
+    List.iter (fun (k, v) -> asl_set m k v) extra;
     m
 end
 

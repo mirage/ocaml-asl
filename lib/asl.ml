@@ -47,8 +47,13 @@ module Client = struct
     | `No_remote
   ]
 
+  external asl_open: string -> string -> bool -> bool -> bool -> t = "stub_asl_open"
+
   let create ~ident ~facility ?(opts=[]) () =
-    failwith "asl_open unbound"
+    let stderr = List.mem `Stderr opts in
+    let no_delay = List.mem `No_delay opts in
+    let no_remote = List.mem `No_remote opts in
+    asl_open ident facility stderr no_delay no_remote
 end 
 
 module Message = struct

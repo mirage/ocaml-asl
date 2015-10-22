@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: 61f7e05bd82a786d23047fd0316c7145)
-version = "0.5"
+# DO NOT EDIT (digest: 82bcd2915a4c5fea9fcf06ebd5f3fbfe)
+version = "0.6"
 description = "Binding to the Apple System Log API"
 requires = "unix result"
 archive(byte) = "asl.cma"

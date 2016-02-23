@@ -1,6 +1,6 @@
 OASISFormat:  0.3
 Name:         asl
-Version:      0.5
+Version:      0.7
 Synopsis:     Binding to the Apple System Log API
 License:      ISC
 Authors:      David Scott

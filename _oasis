@@ -10,8 +10,8 @@ Plugins:      DevFiles (0.3), META (0.3)
 
 Library               asl
   Path:               lib
-  Modules:            Asl
-  BuildDepends:       unix, result
+  Modules:            Asl, Log_asl
+  BuildDepends:       unix, result, logs
   Findlibname:        asl
   CSources:           asl_stubs.c
 
@@ -28,4 +28,3 @@ Executable            example
   Path:               example
   MainIs:             example.ml
   BuildDepends:       asl
-

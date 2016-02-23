@@ -23,8 +23,14 @@ Document asl
   XOCamlbuildPath:      lib
   XOCamlbuildLibraries: asl
 
-Executable            example
+Executable            simple
   CompiledObject:     best
-  Path:               example
-  MainIs:             example.ml
+  Path:               examples
+  MainIs:             simple.ml
+  BuildDepends:       asl
+
+Executable            reporter
+  CompiledObject:     best
+  Path:               examples
+  MainIs:             reporter.ml
   BuildDepends:       asl

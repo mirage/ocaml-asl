@@ -33,7 +33,7 @@ let reporter
         | Logs.App -> `Alert
         | Logs.Error -> `Err
         | Logs.Warning -> `Warning
-        | Logs.Info -> `Info
+        | Logs.Info -> `Notice
         | Logs.Debug -> `Debug in
       let k _ = Asl.log ~client message level (flush ()); over (); k () in
       msgf @@ fun ?header ?tags fmt ->

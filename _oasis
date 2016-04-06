@@ -34,3 +34,9 @@ Executable            reporter
   Path:               examples
   MainIs:             reporter.ml
   BuildDepends:       asl
+
+Executable            reporter_file
+  CompiledObject:     best
+  Path:               examples
+  MainIs:             reporter_file.ml
+  BuildDepends:       asl

@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2015 Unikernel Systems
+ * Copyright (c) 2016 Docker Inc
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  *)
 
 let src =
-   let src = Logs.Src.create "test" ~doc:"Test ASL using the logs library" in
+   let src = Logs.Src.create "test" ~doc:"Test ASL using the logs library with an external file" in
    Logs.Src.set_level src (Some Logs.Debug);
    src
 
@@ -24,6 +24,11 @@ module Log = (val Logs.src_log src : Logs.LOG)
 
 let _ =
   let client = Asl.Client.create ~ident:(Sys.executable_name) ~facility:"Daemon" () in
+  let fd = Unix.openfile "/tmp/extralog.log" [ Unix.O_WRONLY; Unix.O_CREAT; Unix.O_TRUNC ] 0o0644 in
+  let msg_fmt = "$((Time)(ISO8601.6)) $((Level)(str)) - $Message" in
+  let time_fmt = "$((Time)(utc))" in
+  if not (Asl.Client.add_output_file client fd msg_fmt time_fmt `Debug)
+  then failwith "Failed to log to /tmp/extralog.log";
   Logs.set_reporter (Log_asl.reporter ~client ());
   Log.err (fun f -> f "This is an error");
   Log.info (fun f -> f "This is informational");

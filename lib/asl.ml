@@ -15,9 +15,48 @@
  *
  *)
 
+type level = [
+  | `Emerg
+  | `Alert
+  | `Crit
+  | `Err
+  | `Warning
+  | `Notice
+  | `Info
+  | `Debug
+]
+
+external get_asl_level_EMERG: unit -> int = "stub_get_asl_level_EMERG"
+external get_asl_level_ALERT: unit -> int = "stub_get_asl_level_ALERT"
+external get_asl_level_CRIT: unit -> int = "stub_get_asl_level_CRIT"
+external get_asl_level_ERR: unit -> int = "stub_get_asl_level_ERR"
+external get_asl_level_WARNING: unit -> int = "stub_get_asl_level_WARNING"
+external get_asl_level_NOTICE: unit -> int = "stub_get_asl_level_NOTICE"
+external get_asl_level_INFO: unit -> int = "stub_get_asl_level_INFO"
+external get_asl_level_DEBUG: unit -> int = "stub_get_asl_level_DEBUG"
+
+let asl_level_EMERG = get_asl_level_EMERG()
+let asl_level_ALERT = get_asl_level_ALERT()
+let asl_level_CRIT = get_asl_level_CRIT()
+let asl_level_ERR = get_asl_level_ERR()
+let asl_level_WARNING = get_asl_level_WARNING()
+let asl_level_NOTICE = get_asl_level_NOTICE()
+let asl_level_INFO = get_asl_level_INFO()
+let asl_level_DEBUG = get_asl_level_DEBUG()
+
+let int_of_level = function
+  | `Emerg -> asl_level_EMERG
+  | `Alert -> asl_level_ALERT
+  | `Crit -> asl_level_CRIT
+  | `Err -> asl_level_ERR
+  | `Warning -> asl_level_WARNING
+  | `Notice -> asl_level_NOTICE
+  | `Info -> asl_level_INFO
+  | `Debug -> asl_level_DEBUG
+
 module Client = struct
   type t
-  
+
   type opt = [
     | `Stderr
     | `No_delay
@@ -35,7 +74,13 @@ module Client = struct
     let no_delay = List.mem `No_delay opts in
     let no_remote = List.mem `No_remote opts in
     asl_open ident facility stderr no_delay no_remote
-end 
+
+  external asl_add_output_file: t -> Unix.file_descr -> string -> string
+    -> int -> bool = "stub_asl_add_output_file"
+
+  let add_output_file t fd msg_fmt time_fmt level_up_to =
+    asl_add_output_file t fd msg_fmt time_fmt (int_of_level level_up_to)
+end
 
 module Opt = struct
   type 'a t = 'a option
@@ -80,44 +125,6 @@ module Message = struct
     m
 end
 
-type level = [
-  | `Emerg
-  | `Alert
-  | `Crit
-  | `Err
-  | `Warning
-  | `Notice
-  | `Info
-  | `Debug
-]
-
-external get_asl_level_EMERG: unit -> int = "stub_get_asl_level_EMERG"
-external get_asl_level_ALERT: unit -> int = "stub_get_asl_level_ALERT"
-external get_asl_level_CRIT: unit -> int = "stub_get_asl_level_CRIT"
-external get_asl_level_ERR: unit -> int = "stub_get_asl_level_ERR"
-external get_asl_level_WARNING: unit -> int = "stub_get_asl_level_WARNING"
-external get_asl_level_NOTICE: unit -> int = "stub_get_asl_level_NOTICE"
-external get_asl_level_INFO: unit -> int = "stub_get_asl_level_INFO"
-external get_asl_level_DEBUG: unit -> int = "stub_get_asl_level_DEBUG"
-
-let asl_level_EMERG = get_asl_level_EMERG()
-let asl_level_ALERT = get_asl_level_ALERT()
-let asl_level_CRIT = get_asl_level_CRIT()
-let asl_level_ERR = get_asl_level_ERR()
-let asl_level_WARNING = get_asl_level_WARNING()
-let asl_level_NOTICE = get_asl_level_NOTICE()
-let asl_level_INFO = get_asl_level_INFO()
-let asl_level_DEBUG = get_asl_level_DEBUG()
-
-let int_of_level = function
-  | `Emerg -> asl_level_EMERG
-  | `Alert -> asl_level_ALERT
-  | `Crit -> asl_level_CRIT
-  | `Err -> asl_level_ERR
-  | `Warning -> asl_level_WARNING
-  | `Notice -> asl_level_NOTICE
-  | `Info -> asl_level_INFO
-  | `Debug -> asl_level_DEBUG
 
 external asl_log: Client.t -> Message.t -> int -> string -> unit = "stub_asl_log"
 

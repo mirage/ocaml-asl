@@ -70,6 +70,23 @@ CAMLprim value stub_asl_open(value ident, value facility, value stderr, value no
   CAMLreturn(alloc_client(asl));
 }
 
+CAMLprim value stub_asl_add_output_file(
+  value t, value fd, value msg_fmt, value time_fmt, value level_up_to
+) {
+  CAMLparam5(t, fd, msg_fmt, time_fmt, level_up_to);
+  CAMLlocal1(result);
+  aslclient c_asl = Asl_val(t);
+  int c_descriptor = Int_val(fd); /* assume type Unix.file_descr = int */
+  const char *c_msg_fmt = String_val(msg_fmt);
+  const char *c_time_fmt = String_val(time_fmt);
+  int c_filter = ASL_FILTER_MASK_UPTO(Int_val(level_up_to));
+  int c_text_encoding = ASL_ENCODE_SAFE;
+  result = Val_int(0); /* false */
+  if (asl_add_output_file(c_asl, c_descriptor, c_msg_fmt, c_time_fmt, c_filter, c_text_encoding) == 0) {
+    result = Val_int(1); /* true */
+  }
+  CAMLreturn(result);
+}
 
 #define Msg_val(v) (*((aslmsg *) Data_custom_val(v)))
 

@@ -38,6 +38,19 @@ Apple System Log man pages}
 }
 *)
 
+type level = [
+  | `Alert
+  | `Crit
+  | `Debug
+  | `Emerg
+  | `Err
+  | `Info
+  | `Notice
+  | `Warning
+]
+(** Every message has an associated level, which is usually used for
+    filtering. *)
+
 module Client: sig
   type t
   (** A thread-unsafe client handle *)
@@ -51,12 +64,20 @@ module Client: sig
 
   val create: ident:string -> facility:string -> ?opts:opt list -> unit -> t
   (** Create a thread-unsafe client handle. *)
+
+  val add_output_file: t -> Unix.file_descr -> string -> string -> level -> bool
+  (** [add_output_file t fd msg_fmt time_fmt level_up_to] adds
+      [fd] to the set of the file descriptors used by the client [t]. Each log
+      message written via [t] will be written to [fd] if it has level
+      [level_up_to] or above. See the ASL documentation for the meaning of [msg_fmt]
+      and [time_fmt] strings. If successful, the function returns [true] and
+      [false] otherwise. *)
 end
 
 module Message: sig
 
   type t
-  (** A message provides context (keys, values, client ids etc) 
+  (** A message provides context (keys, values, client ids etc)
       for individual logs *)
 
   type ty = [
@@ -71,18 +92,6 @@ module Message: sig
   (** Construct a message, overriding some of the context.*)
 end
 
-type level = [
-  | `Alert
-  | `Crit
-  | `Debug
-  | `Emerg
-  | `Err
-  | `Info
-  | `Notice
-  | `Warning
-]
-(** Every message has an associated level, which is usually used for
-    filtering. *)
 
 val log: ?client:Client.t -> Message.t -> level -> string -> unit
 (** Send a string to the logger with the given message context and level.
@@ -92,4 +101,3 @@ val log: ?client:Client.t -> Message.t -> level -> string -> unit
     extra contention between threads. Note also the only way to have
     logs printed to stderr is to construct and use a Client.t.
   *)
-

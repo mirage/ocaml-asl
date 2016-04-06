@@ -39,14 +39,14 @@ Apple System Log man pages}
 *)
 
 type level = [
+  | `Emerg  (** most severe, highest level *)
   | `Alert
   | `Crit
-  | `Debug
-  | `Emerg
   | `Err
-  | `Info
-  | `Notice
   | `Warning
+  | `Notice
+  | `Info
+  | `Debug  (** least severe, lowest level *)
 ]
 (** Every message has an associated level, which is usually used for
     filtering. *)

@@ -20,24 +20,19 @@ let ppf, flush =
   let flush () = let s = Buffer.contents b in Buffer.clear b; s in
   Format.formatter_of_buffer b, flush
 
-let reporter
-  ?(ident=Filename.basename Sys.executable_name)
-  ?(facility="Daemon")
-  ?(opts=[])
-  () =
-    let client = Asl.Client.create ~ident ~facility ~opts () in
-    let report src level ~over k msgf =
-      (* TODO: add a monotonic clock here *)
-      let message = Asl.Message.create () in
-      let level = match level with
-        | Logs.App -> `Alert
-        | Logs.Error -> `Err
-        | Logs.Warning -> `Warning
-        | Logs.Info -> `Notice
-        | Logs.Debug -> `Debug in
-      let k _ = Asl.log ~client message level (flush ()); over (); k () in
-      msgf @@ fun ?header ?tags fmt ->
-      match header with
-      | None -> Format.kfprintf k ppf ("@[" ^^ fmt ^^ "@]@.")
-      | Some h -> Format.kfprintf k ppf ("[%s] @[" ^^ fmt ^^ "@]@.") h in
-   { Logs.report }
+let reporter ~client () =
+  let report src level ~over k msgf =
+    (* TODO: add a monotonic clock here *)
+    let message = Asl.Message.create () in
+    let level = match level with
+      | Logs.App -> `Alert
+      | Logs.Error -> `Err
+      | Logs.Warning -> `Warning
+      | Logs.Info -> `Notice
+      | Logs.Debug -> `Debug in
+    let k _ = Asl.log ~client message level (flush ()); over (); k () in
+    msgf @@ fun ?header ?tags fmt ->
+    match header with
+    | None -> Format.kfprintf k ppf ("@[" ^^ fmt ^^ "@]@.")
+    | Some h -> Format.kfprintf k ppf ("[%s] @[" ^^ fmt ^^ "@]@.") h in
+ { Logs.report }

@@ -17,9 +17,5 @@
 
 (** Log reporter which sends logs to the Apple System Log *)
 
-val reporter:
-     ?ident:string
-  -> ?facility:string
-  -> ?opts:Asl.Client.opt list
-  -> unit -> Logs.reporter
+val reporter: client:Asl.Client.t -> unit -> Logs.reporter
 (** Construct a Logs reporter which sends logs to Apple System Log *)

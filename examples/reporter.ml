@@ -23,7 +23,8 @@ let src =
 module Log = (val Logs.src_log src : Logs.LOG)
 
 let _ =
-  Logs.set_reporter (Log_asl.reporter ());
+  let client = Asl.Client.create ~ident:(Sys.executable_name) ~facility:"Daemon" () in
+  Logs.set_reporter (Log_asl.reporter ~client ());
   Log.err (fun f -> f "This is an error");
   Log.info (fun f -> f "This is informational");
   Log.debug (fun f -> f "This is lowly debugging data");

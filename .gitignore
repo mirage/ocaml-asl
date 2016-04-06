@@ -6,14 +6,3 @@ setup.bin
 *.docdir
 *.native
 *.byte
-
-# OASIS autogen:
-Makefile
-_tags
-configure
-lib/META
-lib/launchd.mldylib
-lib/launchd.mllib
-lib/liblaunchd_stubs.clib
-myocamlbuild.ml
-setup.ml

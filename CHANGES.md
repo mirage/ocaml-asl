@@ -1,4 +1,4 @@
-0.9 (unreleased)
+0.9 (2016-05-19)
 - Will now build on non-OSX platforms, although a Failure exception
   will be thrown at runtime if anyone tries to use it.
 

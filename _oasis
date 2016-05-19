@@ -1,6 +1,6 @@
 OASISFormat:  0.3
 Name:         asl
-Version:      0.8
+Version:      0.9
 Synopsis:     Binding to the Apple System Log API
 License:      ISC
 Authors:      David Scott
@@ -24,18 +24,21 @@ Document asl
   XOCamlbuildLibraries: asl
 
 Executable            simple
+  Install:            false
   CompiledObject:     best
   Path:               examples
   MainIs:             simple.ml
   BuildDepends:       asl
 
 Executable            reporter
+  Install:            false
   CompiledObject:     best
   Path:               examples
   MainIs:             reporter.ml
   BuildDepends:       asl
 
 Executable            reporter_file
+  Install:            false
   CompiledObject:     best
   Path:               examples
   MainIs:             reporter_file.ml

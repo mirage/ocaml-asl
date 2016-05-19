@@ -23,5 +23,3 @@ depends: [
   "ocamlbuild" {build}
 ]
 build-doc: ["ocaml" "setup.ml" "-doc"]
-
-available: [ os = "darwin" ]

@@ -14,7 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <asl.h>
 #include <string.h>
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
@@ -24,11 +23,22 @@
 #include <caml/threads.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#ifdef __APPLE__
 #include <fcntl.h>
 #include <unistd.h>
+#include <asl.h>
+#else
+#define aslclient void*
+#define aslmsg void*
+static void asl_not_available(){
+  caml_failwith("Apple system log is not available on this platform");
+}
+#endif
 
 #define Asl_val(v) (*((aslclient *) Data_custom_val(v)))
 
+#ifdef __APPLE__
 static void client_finalize(value v) {
   asl_close(Asl_val(v));
 }
@@ -47,14 +57,23 @@ static value alloc_client(aslclient asl) {
   Asl_val(v) = asl;
   return v;
 }
+#endif
 
 CAMLprim value stub_asl_open_null(){
   CAMLparam0();
-  CAMLreturn(alloc_client(NULL));
+  CAMLlocal1(result);
+#ifdef __APPLE__
+  result = alloc_client(NULL);
+#else
+  asl_not_available();
+#endif
+  CAMLreturn(result);
 }
 
 CAMLprim value stub_asl_open(value ident, value facility, value stderr, value no_delay, value no_remote) {
   CAMLparam5(ident, facility, stderr, no_delay, no_remote);
+  CAMLlocal1(result);
+#ifdef __APPLE__
   const char *c_ident = String_val(ident);
   const char *c_facility = String_val(facility);
   uint32_t options =
@@ -62,12 +81,15 @@ CAMLprim value stub_asl_open(value ident, value facility, value stderr, value no
     | (Bool_val(no_delay)?ASL_OPT_NO_DELAY:0)
     | (Bool_val(no_remote)?ASL_OPT_NO_REMOTE:0);
   aslclient asl = NULL;
-
   caml_release_runtime_system();
   asl = asl_open(c_ident, c_facility, options);
   caml_acquire_runtime_system();
 
-  CAMLreturn(alloc_client(asl));
+  result = alloc_client(asl);
+#else
+  asl_not_available();
+#endif
+  CAMLreturn(result);
 }
 
 CAMLprim value stub_asl_add_output_file(
@@ -75,6 +97,7 @@ CAMLprim value stub_asl_add_output_file(
 ) {
   CAMLparam5(t, fd, msg_fmt, time_fmt, level_up_to);
   CAMLlocal1(result);
+#ifdef __APPLE__
   aslclient c_asl = Asl_val(t);
   int c_descriptor = Int_val(fd); /* assume type Unix.file_descr = int */
   const char *c_msg_fmt = String_val(msg_fmt);
@@ -85,11 +108,15 @@ CAMLprim value stub_asl_add_output_file(
   if (asl_add_output_file(c_asl, c_descriptor, c_msg_fmt, c_time_fmt, c_filter, c_text_encoding) == 0) {
     result = Val_int(1); /* true */
   }
+#else
+  asl_not_available();
+#endif
   CAMLreturn(result);
 }
 
 #define Msg_val(v) (*((aslmsg *) Data_custom_val(v)))
 
+#ifdef __APPLE__
 static void message_finalize(value v) {
   asl_free(Msg_val(v));
 }
@@ -102,33 +129,48 @@ static struct custom_operations message_ops = {
   custom_serialize_default,
   custom_deserialize_default
 };
+#endif
 
+#ifdef __APPLE__
 static value alloc_message(aslmsg msg) {
-  value v = alloc_custom(&message_ops, sizeof(aslmsg), 0, 1);
+  value v = Val_int(0);
+  v = alloc_custom(&message_ops, sizeof(aslmsg), 0, 1);
   Msg_val(v) = msg;
   return v;
 }
+#endif
 
 CAMLprim value stub_asl_new_msg() {
   CAMLparam0();
+  CAMLlocal1(result);
+#ifdef __APPLE__
   caml_release_runtime_system();
   aslmsg msg = asl_new(ASL_TYPE_MSG);
   caml_acquire_runtime_system();
-  CAMLreturn(alloc_message(msg));
+  result = alloc_message(msg);
+#else
+  asl_not_available();
+#endif
+  CAMLreturn(result);
 }
 
 CAMLprim value stub_asl_set(value m, value key, value val) {
   CAMLparam3(m, key, val);
   const char *c_key = strdup(String_val(key));
   const char *c_val = strdup(String_val(val));
+#ifdef __APPLE__
   caml_release_runtime_system();
   asl_set(Msg_val(m), c_key, c_val);
   caml_acquire_runtime_system();
+#else
+  asl_not_available();
+#endif
   free((void*)c_key);
   free((void*)c_val);
   CAMLreturn(0);
 }
 
+#ifdef __APPLE__
 #define GENERATE_ASL_SET(name) \
 CAMLprim value stub_asl_set_##name(value m, value string) { \
   CAMLparam2(m, string); \
@@ -139,6 +181,16 @@ CAMLprim value stub_asl_set_##name(value m, value string) { \
   free((void*)c_string); \
   CAMLreturn(0); \
 }
+#else
+#define GENERATE_ASL_SET(name) \
+CAMLprim value stub_asl_set_##name(value m, value string) { \
+  CAMLparam2(m, string); \
+  const char *c_string = strdup(String_val(string)); \
+  asl_not_available(); \
+  free((void*)c_string); \
+  CAMLreturn(0); \
+}
+#endif
 
 GENERATE_ASL_SET(TIME)
 GENERATE_ASL_SET(HOST)
@@ -150,12 +202,19 @@ GENERATE_ASL_SET(GID)
 GENERATE_ASL_SET(LEVEL)
 GENERATE_ASL_SET(MSG)
 
+#ifdef __APPLE__
 #define GENERATE_ASL_LEVEL(name) \
 CAMLprim value stub_get_asl_level_##name(){ \
   CAMLparam0(); \
   CAMLreturn(Val_int(ASL_LEVEL_##name)); \
 }
-
+#else
+#define GENERATE_ASL_LEVEL(name) \
+CAMLprim value stub_get_asl_level_##name(){ \
+  CAMLparam0(); \
+  CAMLreturn(Val_int(0)); \
+}
+#endif
 GENERATE_ASL_LEVEL(EMERG)
 GENERATE_ASL_LEVEL(ALERT)
 GENERATE_ASL_LEVEL(CRIT)
@@ -167,6 +226,7 @@ GENERATE_ASL_LEVEL(DEBUG)
 
 CAMLprim value stub_asl_log(value client, value message, value level, value txt) {
   CAMLparam4(client, message, level, txt);
+#ifdef __APPLE__
   int c_level = Int_val(level);
   aslclient asl = Asl_val(client);
   aslmsg msg = Msg_val(message);
@@ -175,5 +235,8 @@ CAMLprim value stub_asl_log(value client, value message, value level, value txt)
   asl_log(asl, msg, c_level, "%s", c_message);
   caml_acquire_runtime_system();
   free((void*)c_message);
+#else
+  asl_not_available();
+#endif
   CAMLreturn(0);
 }

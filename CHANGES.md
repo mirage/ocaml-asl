@@ -1,3 +1,7 @@
+0.9 (unreleased)
+- Will now build on non-OSX platforms, although a Failure exception
+  will be thrown at runtime if anyone tries to use it.
+
 0.8 (2016-04-07)
 - Add an explicit LICENSE file
 

@@ -1,3 +1,7 @@
+0.10 (2016-05-22)
+- Fix bug where an exception is thrown at module load time on non-OSX
+  platforms
+
 0.9 (2016-05-19)
 - Will now build on non-OSX platforms, although a Failure exception
   will be thrown at runtime if anyone tries to use it.

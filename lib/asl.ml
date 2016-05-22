@@ -67,7 +67,7 @@ module Client = struct
 
   external asl_open_null: unit -> t = "stub_asl_open_null"
 
-  let null = asl_open_null ()
+  let null = lazy (asl_open_null ())
 
   let create ~ident ~facility ?(opts=[]) () =
     let stderr = List.mem `Stderr opts in
@@ -128,6 +128,9 @@ end
 
 external asl_log: Client.t -> Message.t -> int -> string -> unit = "stub_asl_log"
 
-let log ?(client=Client.null) message level body =
+let log ?client message level body =
+  let client = match client with
+    | Some c -> c
+    | None -> Lazy.force Client.null in
   let level = int_of_level level in
   asl_log client message level body

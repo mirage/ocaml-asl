@@ -1,3 +1,7 @@
+## 0.11 (2017-05-22)
+- Use topkg
+- Use jbuilder
+
 ## 0.10 (2016-05-22)
 - Fix bug where an exception is thrown at module load time on non-OSX
   platforms

@@ -7,19 +7,16 @@ license: "ISC"
 homepage: "https://github.com/mirage/ocaml-asl"
 dev-repo: "https://github.com/mirage/ocaml-asl.git"
 bug-reports: "https://github.com/mirage/ocaml-asl/issues"
+doc: "https://mirage.github.io/ocaml-vmnet/"
 
 build: [
-  [make "PREFIX=%{prefix}%"]
+  [ "jbuilder" "subst"] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
-
-install: [make "PREFIX=%{prefix}%" "install"]
-
-remove: [["ocamlfind" "remove" "asl"]]
 
 depends: [
   "result"
   "logs"
   "ocamlfind" {build}
-  "ocamlbuild" {build}
+  "jbuilder"   {build & >="1.0+beta9"}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]

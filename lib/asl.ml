@@ -83,7 +83,6 @@ module Client = struct
 end
 
 module Opt = struct
-  type 'a t = 'a option
   let iter f = function None -> () | Some x -> f x
 end
 
@@ -109,7 +108,7 @@ module Message = struct
   external asl_set_LEVEL: t -> string -> unit = "stub_asl_set_LEVEL"
   external asl_set_MSG: t -> string -> unit = "stub_asl_set_MSG"
 
-  let create ?(ty=`Msg) ?time ?host ?sender ?facility ?pid ?uid
+  let create ?ty:_ ?time ?host ?sender ?facility ?pid ?uid
   ?gid ?level ?msg ?(extra=[]) () =
     let m = asl_new_msg () in
     Opt.iter (asl_set_TIME m) time;

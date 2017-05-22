@@ -21,7 +21,7 @@ let ppf, flush =
   Format.formatter_of_buffer b, flush
 
 let reporter ~client () =
-  let report src level ~over k msgf =
+  let report _src level ~over k msgf =
     (* TODO: add a monotonic clock here *)
     let message = Asl.Message.create () in
     let level = match level with
@@ -31,7 +31,7 @@ let reporter ~client () =
       | Logs.Info -> `Notice
       | Logs.Debug -> `Debug in
     let k _ = Asl.log ~client message level (flush ()); over (); k () in
-    msgf @@ fun ?header ?tags fmt ->
+    msgf @@ fun ?header ?tags:_ fmt ->
     match header with
     | None -> Format.kfprintf k ppf ("@[" ^^ fmt ^^ "@]@.")
     | Some h -> Format.kfprintf k ppf ("[%s] @[" ^^ fmt ^^ "@]@.") h in
